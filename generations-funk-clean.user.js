@@ -2,7 +2,7 @@
 // @name Generations Funk Clean
 // @namespace hap
 // @include http://generations.fr/radio/webradio/generations-funk
-// @version 1
+// @version 1.1
 // @grant none
 // ==/UserScript==
 
@@ -67,10 +67,16 @@ var getXml = function (url, cb) {
 
 var getXmlNoCache = getNoCache(getXml);
 
+var maybeGet = function (el, cb) {
+    // Callback only if element is neither null nor undefined
+    return el == void 0 ? el : cb(el);
+};
+
 var getTrackInfo = function (track) {
-    var artist = track.getElementsByTagName('chanteur')[0].firstChild.nodeValue;
-    var title = track.getElementsByTagName('chanson')[0].firstChild.nodeValue;
-    var time = track.getElementsByTagName('date_prog')[0].firstChild.nodeValue;
+    var getText = function (el) {return el.firstChild.nodeValue;};
+    var artist = maybeGet(track.getElementsByTagName('chanteur')[0], getText);
+    var title = maybeGet(track.getElementsByTagName('chanson')[0], getText);
+    var time = maybeGet(track.getElementsByTagName('date_prog')[0], getText);
     return {time: time, artist: artist, title: title};
 };
 
